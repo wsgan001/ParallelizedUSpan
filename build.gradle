@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.apache.spark', name: 'spark-core_2.10', version: '1.6.0'
+}
+
+task gJar(type: Jar) {
+	manifest {
+        attributes 'Implementation-Title': 'Parallelized_USpan', 'Implementation-Version': version
+    }
+    baseName = project.name + '-all'
+    with jar
+}
