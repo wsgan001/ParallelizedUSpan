@@ -2,6 +2,7 @@ package com.nctu.CCBDA.DSA;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.TreeMap;
 
 import scala.Tuple2;
@@ -28,5 +29,25 @@ public class UtilityMatrix {
             }
             matrix.add(itemSet);
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        for(int i = 0; i < matrix.size(); i++) {
+            if(i != 0)
+                builder.append(",");
+            builder.append("<");
+            int j = 0;
+            for(Map.Entry<Integer, Tuple2<BigInteger, BigInteger>> item: matrix.get(i).entrySet()) {
+                if(j++ != 0)
+                    builder.append(",");
+                builder.append("(" + item.getKey().toString() + "," + item.getValue()._1 + "," + item.getValue()._2 + ")");
+            }
+            builder.append(">");
+        }
+        builder.append("}");
+        return builder.toString();
     }
 }
