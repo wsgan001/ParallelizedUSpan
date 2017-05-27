@@ -1,13 +1,16 @@
 package com.nctu.CCBDA.DSA;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import scala.Tuple2;
 
-public class UtilityMatrix {
+public class UtilityMatrix implements Serializable{
+    private static final long serialVersionUID= 2L;
     /**
      * item id, item utility, suffix sum of utility exclude itself
      */
@@ -28,6 +31,22 @@ public class UtilityMatrix {
                 }
             }
             matrix.add(itemSet);
+        }
+    }
+
+    public void pruneItem(Set<Integer> unpromisingItem) {
+        BigInteger suffixUtility = BigInteger.ZERO;
+        for(int i = matrix.size() - 1; i >= 0; i--) {
+            TreeMap<Integer, Tuple2<BigInteger, BigInteger>> itemSet = matrix.get(i);
+            ArrayList<Map.Entry<Integer, Tuple2<BigInteger, BigInteger>>> traverse = new ArrayList<>(itemSet.entrySet());
+            for(int j = traverse.size() - 1; j >= 0; j--) {
+                if(unpromisingItem.contains(traverse.get(j).getKey()))
+                    itemSet.remove(traverse.get(j).getKey());
+                else {
+                    itemSet.put(traverse.get(j).getKey(), new Tuple2<>(traverse.get(j).getValue()._1, suffixUtility));
+                    suffixUtility = suffixUtility.add(traverse.get(j).getValue()._1);
+                }
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import org.apache.spark.api.java.function.VoidFunction;
 import com.nctu.CCBDA.DSA.DataBasePartition;
 import com.nctu.CCBDA.DSA.UtilityMatrix;
 import com.nctu.CCBDA.stage.Initializer;
+import com.nctu.CCBDA.stage.L_HUSPMining;
 import com.nctu.CCBDA.system.FileInfo;
 
 import org.apache.spark.api.java.JavaPairRDD;
@@ -30,14 +31,23 @@ public class Main implements FileInfo{
          *  Initialization phase
          */
         JavaRDD<UtilityMatrix> utilityMatrixRDD = Initializer.initialize(sc);
-        JavaPairRDD<Long, DataBasePartition> partitions = Initializer.getPartitions(utilityMatrixRDD, DEFAULT_PARTITION_NUM);
-        BigInteger thresholdUtility = Initializer.getThresholdUtility(partitions, threshold);
-        HashSet<Integer> unPromisingItem = new HashSet<>(Initializer.getUmPromisingItem(partitions, thresholdUtility));
+        JavaPairRDD<Long, DataBasePartition> rawPartitions = Initializer.getPartitions(utilityMatrixRDD, DEFAULT_PARTITION_NUM);
+        BigInteger thresholdUtility = Initializer.getThresholdUtility(rawPartitions, threshold);
+        HashSet<Integer> unpromisingItem = new HashSet<>(Initializer.getUmPromisingItem(rawPartitions, thresholdUtility));
 
+        /**
+         * L-HUSP Mining
+         */
+        JavaPairRDD<Long, DataBasePartition> partitions = L_HUSPMining.pruneDataBase(rawPartitions, unpromisingItem);
+
+        out.println("Unpromising item:");
+        for(int item: unpromisingItem)
+            out.println(item + "");
+        out.println();
         partitions.foreach(new VoidFunction<Tuple2<Long, DataBasePartition>>() {
             private static final long serialVersionUID = 0;
             public void call(Tuple2<Long, DataBasePartition> partition) {
-
+                System.out.println("Partition " + partition._1 + "\n" + partition._2.toString());
             }
         });
         sc.close();
