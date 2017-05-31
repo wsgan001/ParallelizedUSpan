@@ -7,24 +7,27 @@ import java.util.Set;
 
 public class DataBasePartition implements Serializable {
     private static final long serialVersionUID= 1L;
-    public ArrayList<UtilityMatrix> dataBase;
+    public ArrayList<Transaction> sequences;
     public BigInteger totalUtility;
+    public BigInteger thresholdUtility;
+    public Integer maxItemID;
     public DataBasePartition() {
-        dataBase = new ArrayList<>();
+        sequences = new ArrayList<>();
         totalUtility = BigInteger.ZERO;
+        maxItemID = 0;
     }
-    public void addUtilityMatrix(UtilityMatrix matrix) {
-        dataBase.add(matrix);
-        totalUtility = totalUtility.add(matrix.matrix.get(0).firstEntry().getValue()._2);
+    public void addUtilityMatrix(Transaction matrix) {
+        sequences.add(matrix);
+        totalUtility = totalUtility.add(matrix.getMatrixUtility());
     }
     public void pruneItem(Set<Integer> unpromisingItem) {
-        for(UtilityMatrix matrix: dataBase)
-            matrix.pruneItem(unpromisingItem);
+        for(Transaction transaction: sequences)
+            transaction.pruneItem(unpromisingItem);
     }
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(UtilityMatrix matrix: dataBase) {
+        for(Transaction matrix: sequences) {
             if(builder.length() != 0)
                 builder.append("\n");
             builder.append(matrix.toString());

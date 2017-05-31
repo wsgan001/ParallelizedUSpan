@@ -1,6 +1,10 @@
 .gradle
 /build/
-bin/
+/bin/
+/USpanLib/
+/tools/
+*.txt
+*.dat
 
 # Ignore Gradle GUI config
 gradle-app.setting
