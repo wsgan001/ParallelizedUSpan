@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
 import org.apache.spark.api.java.function.PairFunction;
 
@@ -32,6 +33,13 @@ public class L_HUSPMining {
             @Override
             public Iterable<Tuple2<Pattern, Tuple2<ArrayList<Integer>, BigInteger>>> call(Tuple2<Integer, DataBasePartition> partition) {
                 return new USpan(partition._2, partition._1, null).mining(threshold).getPatternList();
+            }
+        }).reduceByKey(new Function2<Tuple2<ArrayList<Integer>,BigInteger>,Tuple2<ArrayList<Integer>,BigInteger>,Tuple2<ArrayList<Integer>,BigInteger>>() {
+            private static final long serialVersionUID = 0;
+            @Override
+            public Tuple2<ArrayList<Integer>,BigInteger> call(Tuple2<ArrayList<Integer>,BigInteger> a,Tuple2<ArrayList<Integer>,BigInteger> b) {
+                a._1.addAll(b._1);
+                return new Tuple2<>(a._1, a._2.add(b._2));
             }
         });
     }

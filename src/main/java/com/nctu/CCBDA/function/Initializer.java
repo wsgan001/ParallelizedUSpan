@@ -29,8 +29,8 @@ public class Initializer implements FileInfo {
      * @param sc spark context
      * @return return a RDD containing all utility matrix
      */
-    public static JavaRDD<Transaction> initialize(JavaSparkContext sc) {
-        return sc.textFile(DATASETS).map(new Function<String, Transaction>() {
+    public static JavaRDD<Transaction> initialize(JavaSparkContext sc, String file) {
+        return sc.textFile(file).map(new Function<String, Transaction>() {
             private static final long serialVersionUID = 0;
             @Override
             public Transaction call(String line) {
@@ -109,7 +109,6 @@ public class Initializer implements FileInfo {
                     HashSet<Integer> used = new HashSet<>();
                     for(ItemSet itemSet: transaction.matrix)
                         for(Item item: itemSet.entrySet()) {
-                            partition._2.maxItemID = Math.max(partition._2.maxItemID, item.id);
                             if(!used.contains(item.id)) {
                                 itemUtiInThisSeq.add(new Tuple2<>(item.id, seqUtility));
                                 used.add(item.id);
@@ -144,10 +143,6 @@ public class Initializer implements FileInfo {
             private static final long serialVersionUID = 0;
             @Override
             public Tuple2<Integer, DataBasePartition> call(Tuple2<Integer, DataBasePartition> partition) {
-                for(Transaction transaction: partition._2.sequences)
-                    for(ItemSet itemSet: transaction.matrix)
-                        for(Item item: itemSet.entrySet())
-                            partition._2.maxItemID = Math.max(partition._2.maxItemID, item.id);
                 partition._2.thresholdUtility = new BigDecimal(partition._2.totalUtility).multiply(new BigDecimal(threshold)).toBigInteger();
                 return partition;
             }

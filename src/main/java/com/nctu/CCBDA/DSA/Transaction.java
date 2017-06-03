@@ -11,8 +11,10 @@ public class Transaction implements Serializable{
      * item id, item utility, suffix sum of utility exclude itself
      */
     public ArrayList<ItemSet> matrix;
+    public int maxItemID;
     public Transaction(String raw) {
         matrix = new ArrayList<>();
+        maxItemID = 0;
         String itemSets[] = raw.split("-1");
         BigInteger totalUtility = new BigInteger(itemSets[itemSets.length - 1].split("SUtility:")[1]);
         for(int i = 0; i < itemSets.length - 1; i++) {
@@ -21,6 +23,7 @@ public class Transaction implements Serializable{
             for(int j = 0; j < items.length; j++) {
                 if(items[j].length() != 0) {
                     int itemID = Integer.parseInt(items[j]);
+                    maxItemID = Math.max(maxItemID, itemID);
                     BigInteger itemUtility = new BigInteger(items[++j]);
                     totalUtility = totalUtility.subtract(itemUtility);
                     itemSet.addItem(new Item(itemID, itemUtility, totalUtility));
@@ -48,9 +51,10 @@ public class Transaction implements Serializable{
         }
     }
     public BigInteger getMatrixUtility() {
-        if(matrix.size() != 0 && matrix.get(0).size() != 0)
-            return matrix.get(0).firstItem().suffixQuality.add(matrix.get(0).firstItem().quality);
-        else
+        if(matrix.size() != 0 && matrix.get(0).size() != 0) {
+            Item item = matrix.get(0).firstItem();
+            return item.suffixQuality.add(item.quality);
+        } else
             return BigInteger.ZERO;
     }
 
@@ -60,6 +64,15 @@ public class Transaction implements Serializable{
             return item.quality.add(item.suffixQuality);
         } else
             return BigInteger.ZERO;
+    }
+    public boolean isEmptyTransaction() {
+        for(int i = 0; i < matrix.size(); i++)
+            if(matrix.get(i).size() != 0)
+                return false;
+        return true;
+    }
+    public Item getFirstItem() {
+        return matrix.get(0).firstItem();
     }
     @Override
     public String toString() {

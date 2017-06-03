@@ -10,19 +10,23 @@ public class DataBasePartition implements Serializable {
     public ArrayList<Transaction> sequences;
     public BigInteger totalUtility;
     public BigInteger thresholdUtility;
-    public Integer maxItemID;
     public DataBasePartition() {
         sequences = new ArrayList<>();
         totalUtility = BigInteger.ZERO;
-        maxItemID = 0;
     }
     public void addUtilityMatrix(Transaction matrix) {
         sequences.add(matrix);
         totalUtility = totalUtility.add(matrix.getMatrixUtility());
     }
     public void pruneItem(Set<Integer> unpromisingItem) {
-        for(Transaction transaction: sequences)
+        for(int i = 0; i < sequences.size(); i++) {
+            Transaction transaction = sequences.get(i);
             transaction.pruneItem(unpromisingItem);
+            if(transaction.isEmptyTransaction()) {
+                sequences.remove(i);
+                i--;
+            }
+        }
     }
     @Override
     public String toString() {

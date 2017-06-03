@@ -6,7 +6,7 @@ import java.util.TreeSet;
 
 public class ItemSet implements Serializable {
     public static final long serialVersionUID = 4;
-    private TreeSet<Item> set;
+    public TreeSet<Item> set;
     public ItemSet() {
         set = new TreeSet<>();
     }

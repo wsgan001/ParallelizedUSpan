@@ -11,12 +11,10 @@ import com.nctu.CCBDA.DSA.LQSTreeInfo;
 import com.nctu.CCBDA.DSA.Pattern;
 import com.nctu.CCBDA.DSA.Transaction;
 
-public class CauculateUtility {
-    private DataBasePartition database;
-    public CauculateUtility(DataBasePartition database) {
-        this.database = database;
-    }
-    public BigInteger cauculate(Pattern pattern) {
+public class DFSandAlphaBetaPruning extends PatternUtilityCauculater {
+    private static final long serialVersionUID = 94879487;
+    @Override
+    public BigInteger getUtility(DataBasePartition database,Pattern pattern) {
         BigInteger sum = BigInteger.ZERO;
         for(Transaction transaction: database.sequences)
             sum = sum.add(utilityInSequence(pattern, transaction));
@@ -29,7 +27,7 @@ public class CauculateUtility {
             ItemSet itemSet = transaction.matrix.get(itemSetID);
             Item item = itemSet.getItem(firstItemID);
             if(item != null)
-                infos.add(new LQSTreeInfo(firstItemID, itemSetID, item.quality));
+                infos.add(new LQSTreeInfo(firstItemID, itemSetID, item.quality, item.suffixQuality));
         }
         for(int itemSetPatID = 0; infos.size() != 0 && itemSetPatID < pattern.size(); itemSetPatID++) {
             ItemSetPattern itemSetPattern = pattern.getItemSetPattern(itemSetPatID);
@@ -55,14 +53,14 @@ public class CauculateUtility {
     private void getI_ConcatentationInfo(int itemID, LQSTreeInfo info, Transaction transaction, ArrayList<LQSTreeInfo> newInfos) {
         Item item = transaction.matrix.get(info.itemSetID).getItem(itemID);
         if(item != null)
-            newInfos.add(new LQSTreeInfo(itemID, info.itemSetID, info.utility.add(item.quality)));
+            newInfos.add(new LQSTreeInfo(itemID, info.itemSetID, info.utility.add(item.quality), item.suffixQuality));
     }
     
     private void getS_ConcatentationInfo(int itemID, LQSTreeInfo info, Transaction transaction, ArrayList<LQSTreeInfo> newInfos) {
         for(int itemSetID = info.itemSetID + 1; itemSetID < transaction.matrix.size(); itemSetID++) {
             Item item = transaction.matrix.get(itemSetID).getItem(itemID);
             if(item != null)
-                newInfos.add(new LQSTreeInfo(itemID, itemSetID, info.utility.add(item.quality)));
+                newInfos.add(new LQSTreeInfo(itemID, itemSetID, info.utility.add(item.quality), item.suffixQuality));
         }
     }
 }

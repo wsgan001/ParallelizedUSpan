@@ -18,14 +18,7 @@ public class PG_HUSPMining {
                             JavaPairRDD<Integer, DataBasePartition> partitions,
                             List<BigInteger> partitionThresholdUtility,
                             BigInteger thresholdUtility) {
-        return l__HUSP.reduceByKey(new Function2<Tuple2<ArrayList<Integer>,BigInteger>,Tuple2<ArrayList<Integer>,BigInteger>,Tuple2<ArrayList<Integer>,BigInteger>>() {
-            private static final long serialVersionUID = 0;
-            @Override
-            public Tuple2<ArrayList<Integer>,BigInteger> call(Tuple2<ArrayList<Integer>,BigInteger> a,Tuple2<ArrayList<Integer>,BigInteger> b) {
-                a._1.addAll(b._1);
-                return new Tuple2<>(a._1, a._2.add(b._2));
-            }
-        }).filter(new Function<Tuple2<Pattern,Tuple2<ArrayList<Integer>,BigInteger>>,Boolean>() {
+        return l__HUSP.filter(new Function<Tuple2<Pattern,Tuple2<ArrayList<Integer>,BigInteger>>,Boolean>() {
             private static final long serialVersionUID = 0;
             @Override
             public Boolean call(Tuple2<Pattern,Tuple2<ArrayList<Integer>,BigInteger>> t) {
@@ -37,6 +30,42 @@ public class PG_HUSPMining {
                     return true;
                 else
                     return false;
+            }
+        });
+    }
+
+    public static BigInteger getRDDSize1(JavaPairRDD<Pattern, Tuple2<ArrayList<Integer>, BigInteger>> rdd) {
+        if(rdd.isEmpty())
+            return BigInteger.ZERO;
+        return rdd.map(new Function<Tuple2<Pattern, Tuple2<ArrayList<Integer>, BigInteger>>, BigInteger>() {
+            private static final long serialVersionUID = 0;
+            @Override
+            public BigInteger call(Tuple2<Pattern, Tuple2<ArrayList<Integer>, BigInteger>> t) {
+                return BigInteger.ONE;
+            }
+        }).reduce(new Function2<BigInteger, BigInteger, BigInteger>() {
+            private static final long serialVersionUID = 0;
+            @Override
+            public BigInteger call(BigInteger a, BigInteger b) {
+                return a.add(b);
+            }
+        });
+    }
+
+    public static BigInteger getRDDSize2(JavaPairRDD<Pattern, BigInteger> rdd) {
+        if(rdd.isEmpty())
+            return BigInteger.ZERO;
+        return rdd.map(new Function<Tuple2<Pattern, BigInteger>, BigInteger>() {
+            private static final long serialVersionUID = 0;
+            @Override
+            public BigInteger call(Tuple2<Pattern, BigInteger> t) {
+                return BigInteger.ONE;
+            }
+        }).reduce(new Function2<BigInteger, BigInteger, BigInteger>() {
+            private static final long serialVersionUID = 0;
+            @Override
+            public BigInteger call(BigInteger a, BigInteger b) {
+                return a.add(b);
             }
         });
     }
