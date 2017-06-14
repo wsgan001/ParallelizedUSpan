@@ -6,4 +6,4 @@
 
 ## Build With
 * [Gradle](https://gradle.org/) - Dependency Management
-* Apache Spark 1.6.0
+* Apache Spark 1.6.1

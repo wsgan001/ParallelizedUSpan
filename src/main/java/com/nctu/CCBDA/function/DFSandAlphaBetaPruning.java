@@ -63,4 +63,7 @@ public class DFSandAlphaBetaPruning extends PatternUtilityCauculater {
                 newInfos.add(new LQSTreeInfo(itemID, itemSetID, info.utility.add(item.quality), item.suffixQuality));
         }
     }
+    public String getAlgorithmName() {
+        return "DFS and Alpha-Beta-Pruning";
+    }
 }

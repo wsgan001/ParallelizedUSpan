@@ -19,9 +19,11 @@ import scala.Tuple3;
 
 public class USpan {
     private ArrayList<Tuple2<Pattern, Tuple2<ArrayList<Integer>, BigInteger>>> patterns;
+    private Long numOfPattern;
     private DataBasePartition database;
     private int partitionNum;
     private boolean debug = false;
+    private boolean allResult;
     // private HashSet<Integer> unpromisinItem;
     public USpan(DataBasePartition database,int partitionNum,HashSet<Integer> unpromisinItem) {
         this.database = database;
@@ -31,7 +33,13 @@ public class USpan {
     public ArrayList<Tuple2<Pattern, Tuple2<ArrayList<Integer>, BigInteger>>> getPatternList() {
         return patterns;
     }
-    public USpan mining(double threshold) {
+
+    public Long getNumOfPattern() {
+        return numOfPattern;
+    }
+    public USpan mining(double threshold, boolean allResult) {
+        this.allResult = allResult;
+        numOfPattern = 0L;
         // System.out.printf("thresholdUtility: %s%n", database.thresholdUtility.toString());
         ArrayList<ArrayList<LQSTreeInfo>> utilityList = new ArrayList<>();
         for(int sequenceID = 0; sequenceID < database.sequences.size(); sequenceID++) {
@@ -232,8 +240,10 @@ public class USpan {
     }
 
     private void addPattern(Pattern pattern, BigInteger utility) {
-        patterns.add(new Tuple2<>(pattern.clone(), new Tuple2<>(new ArrayList<Integer>(Arrays.asList(partitionNum)), utility)));
-        if(patterns.size() % 10000 == 0)
+        numOfPattern++;
+        if(allResult)
+            patterns.add(new Tuple2<>(pattern.clone(), new Tuple2<>(new ArrayList<Integer>(Arrays.asList(partitionNum)), utility)));
+        if(numOfPattern% 10000 == 0)
             System.out.println("Number of L_HUSP in partition " + partitionNum + " up to now: " + patterns.size());
     }
 
