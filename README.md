@@ -24,8 +24,8 @@ spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar
 ```
 - for debug
 ```
--sdg; Ppen system debug
--adg; Ppen algorithm debug
+-sdg; Open system debug
+-adg; Open algorithm debug
 -np number_of_partition; Number of partition
 -ga algorithm_name[DP|DFS]; The algorithm which check whether the pattern is High-Utility-Sequetail-Pattern
 -ct; Only count candidate pattern
