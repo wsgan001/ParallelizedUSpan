@@ -8,16 +8,30 @@
 * [Gradle](https://gradle.org/) - Dependency Management
 * Apache Spark 1.6.1
 ## How to run
+- Rebuild project
+```
+gradle gJar
+```
+- Put build\libs\ParallelizedUSpan-all-1.0.jar to your master spark machine
+- Use following instruction to run the program
 ```
 spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar input_file threshold_utility [-options]
 ```
 ### options
+- for user
 ```
--sdg; open system debug
--adg; open algorithm debug
--np; number_of_partition ; number of partition
--ou folder_name; set output folder name
--ga algorithm_name; DP|DFS
--ct; only count candidate pattern
--gp; apply global pruning
+-ou folder_name; Set the name of output folder in hadoop file system
+```
+- for debug
+```
+-sdg; Ppen system debug
+-adg; Ppen algorithm debug
+-np number_of_partition; Number of partition
+-ga algorithm_name[DP|DFS]; The algorithm which check whether the pattern is High-Utility-Sequetail-Pattern
+-ct; Only count candidate pattern
+-gp; Apply global pruning
+```
+- default
+```
+spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar input_file threshold_utility -np 1 -ga DFS
 ```
