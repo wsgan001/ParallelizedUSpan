@@ -28,7 +28,7 @@ spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar
 -adg; Open algorithm debug
 -np number_of_partition; Number of partition
 -ga algorithm_name[DP|DFS]; The algorithm which check whether the pattern is High-Utility-Sequetail-Pattern
--ct; Only count candidate pattern
+-ct; Only count the number of candidate pattern
 -gp; Apply global pruning
 ```
 - default
