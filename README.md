@@ -15,7 +15,8 @@ gradle gJar
 - Put build\libs\ParallelizedUSpan-all-1.0.jar to your master spark machine
 - Use following instruction to run the program
 ```
-spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar input_file threshold_utility [-options]
+spark-submit --class com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar \
+input_file threshold_utility [-options]
 ```
 ### options
 - for user
@@ -33,5 +34,6 @@ spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar
 ```
 - default
 ```
-spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar input_file threshold_utility -np 1 -ga DFS
+spark-submit --class com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar \
+input_file threshold_utility -np 1 -ga DFS
 ```
