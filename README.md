@@ -19,5 +19,5 @@ spark-submit com.nctu.CCBDA.Main --master local[2] ParallelizedUSpan-all-1.0.jar
 -ou folder_name; set output folder name
 -ga algorithm_name; DP|DFS
 -ct; only count candidate pattern
--gp; dot apply global pruning
+-gp; apply global pruning
 ```
