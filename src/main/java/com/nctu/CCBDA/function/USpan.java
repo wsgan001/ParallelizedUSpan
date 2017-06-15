@@ -40,7 +40,7 @@ public class USpan {
     public USpan mining(double threshold, boolean allResult) {
         this.allResult = allResult;
         numOfPattern = 0L;
-        // System.out.printf("thresholdUtility: %s%n", database.thresholdUtility.toString());
+        System.out.println("Partition " + partitionNum + " start L-HUPS mining");
         ArrayList<ArrayList<LQSTreeInfo>> utilityList = new ArrayList<>();
         for(int sequenceID = 0; sequenceID < database.sequences.size(); sequenceID++) {
             ArrayList<LQSTreeInfo> initSeqInfo = new ArrayList<>();
@@ -244,7 +244,7 @@ public class USpan {
         if(allResult)
             patterns.add(new Tuple2<>(pattern.clone(), new Tuple2<>(new ArrayList<Integer>(Arrays.asList(partitionNum)), utility)));
         if(numOfPattern% 10000 == 0)
-            System.out.println("Number of L_HUSP in partition " + partitionNum + " up to now: " + patterns.size());
+            System.out.println("Number of L_HUSP in partition " + partitionNum + " up to now: " + numOfPattern);
     }
 
     private void showUtilityList(ArrayList<ArrayList<LQSTreeInfo>> list) {

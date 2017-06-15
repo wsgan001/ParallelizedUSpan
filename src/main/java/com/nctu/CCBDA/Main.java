@@ -40,6 +40,7 @@ public class Main implements FileInfo {
      * -ou folder_name ; set output folder name
      * -ga algorithm_name ; DP|DFS
      * -ct only count candidate pattern;
+     * -gp dot apply global pruning
      */
     public static void main(String argc[]) {
         if(argc.length < 2) {
@@ -60,6 +61,7 @@ public class Main implements FileInfo {
         boolean aDebug = false;
         boolean sDebug = false;
         boolean onlyCount = false;
+        boolean globalPruning = true;
         int partitionNum = 1;
         for(int i = 2; i < argc.length; i++) {
             if(argc[i].equals("-sdg"))
@@ -74,6 +76,8 @@ public class Main implements FileInfo {
                 gHUSPalgorithm = argc[(i++)+1];
             if(argc[i].equals("-ct"))
                 onlyCount = true;
+            if(argc[i].equals("-gp"))
+                globalPruning = false;
         }
         if(!sDebug)
             Logger.getRootLogger().setLevel(Level.ERROR);
@@ -84,6 +88,8 @@ public class Main implements FileInfo {
         LoggerHelper.infoLog("\tG-HUSP Algorithm: " + gHUSPalgorithm);
         LoggerHelper.infoLog("\tOpen Algorithm Debug: " + aDebug);
         LoggerHelper.infoLog("\tOpen System Debug: " + sDebug);
+        LoggerHelper.infoLog("\tOnly Count number of -PG_HUSP: " + onlyCount);
+        LoggerHelper.infoLog("\tApply global pruning: " + globalPruning);
         LoggerHelper.infoLog("\tSave Result: " + outputFolder);
         /**
          *  Initialization
@@ -96,7 +102,7 @@ public class Main implements FileInfo {
         LoggerHelper.infoLog("\tThesholdUtility:" + thresholdUtility.toString());
         HashSet<Integer> unpromisingItem = new HashSet<>(Initializer.getUmPromisingItem(rawPartitions, thresholdUtility));
         rawPartitions = Initializer.updateInformation(rawPartitions, threshold);
-
+        LoggerHelper.infoLog("\t Unpromising item num:" + unpromisingItem.size());
         if(aDebug) {
             StringBuilder builder = new StringBuilder();
             builder.append("Unpromising item:");
@@ -116,7 +122,11 @@ public class Main implements FileInfo {
          */
         LoggerHelper.infoLog("L-HUSP MINING");
         LoggerHelper.infoLog("\tPrune data base");
-        JavaPairRDD<Integer, DataBasePartition> partitions = L_HUSPMining.pruneDataBase(rawPartitions, unpromisingItem);
+        JavaPairRDD<Integer, DataBasePartition> partitions;
+        if(globalPruning)
+            partitions = L_HUSPMining.pruneDataBase(rawPartitions, unpromisingItem);
+        else
+            partitions = L_HUSPMining.pruneDataBase(rawPartitions, new HashSet<>());
         // partitions.cache();
         partitions.foreach(new VoidFunction<Tuple2<Integer, DataBasePartition>>() {
             private static final long serialVersionUID = 0;
